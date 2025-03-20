@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require_relative '../lib/person_matcher'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: bin/person_matcher -f INPUT_FILE -m MATCH_TYPE"
+  
+  opts.on("-f FILE", "--file FILE", "Input CSV file") { |f| options[:file] = f }
+  opts.on("-m TYPE", "--match TYPE", "Matching type") { |m| options[:match] = m }
+  
+  opts.on("-h", "--help", "Show this help message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+if options[:file] && options[:match]
+  matcher = PersonMatcher.new(options[:file], options[:match])
+  matcher.process
+else
+  puts "Invalid usage. Run: bin/person_matcher -f input.csv -m same_email"
+  puts "Valid matching types: same_email, same_phone, same_email_or_phone"
+end
